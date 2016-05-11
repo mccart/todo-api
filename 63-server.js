@@ -4,8 +4,30 @@ var _ = require('underscore');
 
 var app = express();
 var PORT = process.env.PORT || 3000;
-var todos = [];
-var todoNextId = 1;
+// var todos = [];
+// var todoNextId = 1;
+
+var todos = [  {
+    "description": "Walk the dog",
+    "completed": false,
+    "id": 1
+  },
+  {
+    "description": "talk to the Dog",
+    "completed": true,
+    "id": 2
+  },
+  {
+    "description": "talk to the computer",
+    "completed": true,
+    "id": 3
+  },
+  {
+    "description": "yell at the computer",
+    "completed": false,
+    "id": 4
+  }];
+var todoNextId = 5;
 
 app.use(bodyParser.json());
 
@@ -15,20 +37,29 @@ app.get('/', function (req, res) {
 
 // GET /todos
 // GET /todos?completed=[true|false]
+// GET /todos?q=string
 app.get('/todos', function (req, res) {
   var queryParams = req.query;
   var filteredTodos = todos;
 
+  // /todos?completed=[true|false]
   if (queryParams.hasOwnProperty('completed')) {
-    if (queryParams.completed === 'true') {
-      filteredTodos = _.where(filteredTodos, {completed: true})
+    if (queryParams.completed.toLowerCase() === 'true') {
+      filteredTodos = _.where(filteredTodos, {completed: true});
     }
-    else if (queryParams.completed === 'false') {
-      filteredTodos = _.where(filteredTodos, {completed: false})
+    else if (queryParams.completed.toLowerCase() === 'false') {
+      filteredTodos = _.where(filteredTodos, {completed: false});
     }
     // else {
     //   return res.status(400).send();
     // }
+  }
+
+  // /todos?q=string
+  if (queryParams.hasOwnProperty('q') && queryParams.q.length > 0) {
+      filteredTodos = _.filter(filteredTodos, function (todo) {
+        return todo.description.toLowerCase().indexOf(queryParams.q.toLowerCase()) > -1;
+      });
   }
 
   res.json(filteredTodos);
