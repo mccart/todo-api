@@ -1,7 +1,8 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
-var db = require('./67-db.js');
+//var db = require('./67-db.js');
+var db = require('./70-db.js');
 
 var app = express();
 var PORT = process.env.PORT || 3000;
